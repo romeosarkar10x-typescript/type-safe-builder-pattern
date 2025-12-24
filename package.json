@@ -1,0 +1,22 @@
+{
+    "name": "type-safe-builder-pattern",
+    "author": "Romeo Sarkar",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/romeosarkar10x-typescript/type-safe-builder-pattern"
+    },
+    "module": "src/index.mts",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "format": "prettier --write \"**/*.{mjs,mts,json}\"",
+        "check-formatting": "prettier --check \"**/*.{mjs,mts,json}\""
+    },
+    "devDependencies": {
+        "@types/bun": "latest",
+        "prettier": "^3.7.4"
+    },
+    "peerDependencies": {
+        "typescript": "^5"
+    }
+}
