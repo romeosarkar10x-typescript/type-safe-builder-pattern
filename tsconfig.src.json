@@ -1,3 +1,4 @@
+
 {
     "compilerOptions": {
         // Environment setup & latest features
@@ -31,8 +32,9 @@
         "paths": {
             "@/*": ["src/*"]
         },
-        "types": ["bun-types"]
+        "types": ["bun-types"],
+        "composite": true
     },
 
-    "include": ["tests/**/*"]
+    "include": ["src/**/*"]
 }
