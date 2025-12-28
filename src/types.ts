@@ -19,7 +19,7 @@ export type BuilderAddProperty<
 type BuilderDoAddUniqueProperty<
     KeyLiteral extends string,
     Value,
-    BuilderObject extends object = object,
+    BuilderObject extends Record<string, unknown> = {},
 > = {
     [K in keyof BuilderObject]: BuilderObject[K];
 } & Record<KeyLiteral, Value>;
@@ -27,7 +27,7 @@ type BuilderDoAddUniqueProperty<
 type BuilderDoAddProperty<
     KeyLiteral extends string,
     Value,
-    BuilderObject extends object = object,
+    BuilderObject extends Record<string, unknown> = {},
 > = BuilderDoAddUniqueProperty<
     KeyLiteral,
     Value,
@@ -39,10 +39,10 @@ type BuilderDoAddProperty<
 export type BuilderAddProperty<
     Key extends string,
     Value,
-    BuilderObject extends object = object,
+    BuilderObject extends Record<string, unknown> = {},
 > = string extends Key
     ? never
-    : PrettifyObject<BuilderDoAddProperty<Key, Value, BuilderObject>>;
+    : PrettifyBuilderObject<BuilderDoAddProperty<Key, Value, BuilderObject>>;
 /*
 export type BuilderAddProperty<
     Key extends string,
@@ -53,10 +53,6 @@ export type BuilderAddProperty<
     : BuilderDoAddProperty<Key, Value, BuilderObject>;
     */
 
-export type PrettifyObject<T extends object> = {
-    [K in keyof T]: T[K] extends object
-        ? T[K] extends Function
-            ? T[K]
-            : PrettifyObject<T[K]>
-        : T[K];
+export type PrettifyBuilderObject<T extends Record<string, unknown>> = {
+    [K in keyof T]: T[K];
 } & {};

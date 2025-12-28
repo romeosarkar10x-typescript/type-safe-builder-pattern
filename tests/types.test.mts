@@ -2,14 +2,14 @@ import { describe, test, expectTypeOf } from "bun:test";
 import type { BuilderAddProperty } from "@/types";
 
 describe("BuilderAddProperty", () => {
-    test("Should add a single property to empty zygote", () => {
+    test("should add a single property to empty zygote", () => {
         type Result = BuilderAddProperty<"name", string>;
 
         expectTypeOf<Result>().toHaveProperty("name");
         expectTypeOf<Result>().toEqualTypeOf<{ name: string }>();
     });
 
-    test("Should add multiple properties sequentially", () => {
+    test("should add multiple properties sequentially", () => {
         type Step0 = {};
         type Step1 = BuilderAddProperty<"name", string, Step0>;
         type Step2 = BuilderAddProperty<"age", number, Step1>;
@@ -22,7 +22,7 @@ describe("BuilderAddProperty", () => {
         }>();
     });
 
-    test("Should preserve existing properties when adding new ones", () => {
+    test("should preserve existing properties when adding new ones", () => {
         type WithName = BuilderAddProperty<"name", string, {}>;
         type WithNameAndAge = BuilderAddProperty<"age", number, WithName>;
 
@@ -30,7 +30,7 @@ describe("BuilderAddProperty", () => {
         expectTypeOf<WithNameAndAge>().toHaveProperty("age");
     });
 
-    test("Should handle different value types", () => {
+    test("should handle different value types", () => {
         type WithString = BuilderAddProperty<"str", string>;
         type WithNumber = BuilderAddProperty<"num", number>;
         type WithBoolean = BuilderAddProperty<"bool", boolean>;
@@ -44,12 +44,12 @@ describe("BuilderAddProperty", () => {
         expectTypeOf<WithObject>().toEqualTypeOf<{ obj: { nested: number } }>();
     });
 
-    test("Should reject non-literal string keys", () => {
+    test("should reject non-literal string keys", () => {
         type InvalidResult = BuilderAddProperty<string, number>;
         expectTypeOf<InvalidResult>().toBeNever();
     });
 
-    test("Should handle union types as values", () => {
+    test("should handle union types as values", () => {
         type WithUnion = BuilderAddProperty<"status", "active" | "inactive">;
 
         expectTypeOf<WithUnion>().toEqualTypeOf<{
@@ -57,7 +57,7 @@ describe("BuilderAddProperty", () => {
         }>();
     });
 
-    test("Should handle optional types as values", () => {
+    test("should handle optional types as values", () => {
         type WithOptional = BuilderAddProperty<"maybe", string | undefined>;
 
         expectTypeOf<WithOptional>().toEqualTypeOf<{
@@ -65,7 +65,7 @@ describe("BuilderAddProperty", () => {
         }>();
     });
 
-    test("Should handle null as a value", () => {
+    test("should handle null as a value", () => {
         type WithNull = BuilderAddProperty<"nullable", string | null>;
 
         expectTypeOf<WithNull>().toEqualTypeOf<{
@@ -73,7 +73,7 @@ describe("BuilderAddProperty", () => {
         }>();
     });
 
-    test("Should handle complex nested objects", () => {
+    test("should handle complex nested objects", () => {
         type ComplexValue = {
             user: {
                 profile: {
@@ -91,7 +91,7 @@ describe("BuilderAddProperty", () => {
         expectTypeOf<WithComplex>().toEqualTypeOf<{ data: ComplexValue }>();
     });
 
-    test("Should create independent type branches", () => {
+    test("should create independent type branches", () => {
         type Base = BuilderAddProperty<"id", number>;
 
         type Branch1 = BuilderAddProperty<"name", string, Base>;
@@ -105,7 +105,7 @@ describe("BuilderAddProperty", () => {
         expectTypeOf<Branch2>().not.toEqualTypeOf<{ name: string }>();
     });
 
-    test("Should handle function types as values", () => {
+    test("should handle function types as values", () => {
         function fn(x: number): string {
             return x.toExponential();
         }
@@ -117,7 +117,7 @@ describe("BuilderAddProperty", () => {
         }>();
     });
 
-    test("Should handle generic types as values", () => {
+    test("should handle generic types as values", () => {
         type WithPromise = BuilderAddProperty<"async", Promise<string>>;
         type WithArray = BuilderAddProperty<"list", Array<number>>;
 
@@ -125,15 +125,15 @@ describe("BuilderAddProperty", () => {
         expectTypeOf<WithArray>().toEqualTypeOf<{ list: Array<number> }>();
     });
 
-    test("Should maintain type safety with literal types", () => {
+    test("should maintain type safety with literal types", () => {
         type WithLiteral = BuilderAddProperty<"type", "user">;
 
-        // Should accept only the literal type
+        // should accept only the literal type
         expectTypeOf<WithLiteral>().toEqualTypeOf<{ type: "user" }>();
         expectTypeOf<WithLiteral>().not.toEqualTypeOf<{ type: string }>();
     });
 
-    test("Should handle numeric keys (edge case)", () => {
+    test("should handle numeric keys (edge case)", () => {
         const num = 2;
         type NumericKey = typeof num;
 
@@ -141,7 +141,7 @@ describe("BuilderAddProperty", () => {
         BuilderAddProperty<NumericKey, number>;
     });
 
-    test("Should handle symbol keys (edge case)", () => {
+    test("should handle symbol keys (edge case)", () => {
         const sym = Symbol.for("TEST");
         type SymbolKey = typeof sym;
 
@@ -149,7 +149,7 @@ describe("BuilderAddProperty", () => {
         BuilderAddProperty<SymbolKey, number>;
     });
 
-    test("Should create flattened object types (prettified)", () => {
+    test("should create flattened object types (prettified)", () => {
         type Step0 = {};
         type Step1 = BuilderAddProperty<"a", number, Step0>;
         type Step2 = BuilderAddProperty<"b", string, Step1>;
@@ -159,7 +159,7 @@ describe("BuilderAddProperty", () => {
         expectTypeOf<keys>().toEqualTypeOf<"a" | "b">();
     });
 
-    test("Should handle readonly values", () => {
+    test("should handle readonly values", () => {
         type WithReadonly = BuilderAddProperty<
             "immutable",
             Readonly<{ value: number }>
@@ -170,7 +170,7 @@ describe("BuilderAddProperty", () => {
         }>();
     });
 
-    test("Should build up complex real-world types", () => {
+    test("should build up complex real-world types", () => {
         type UserBuilder = {};
         type WithID = BuilderAddProperty<"id", string, UserBuilder>;
         type WithName = BuilderAddProperty<"name", string, WithID>;
@@ -201,7 +201,7 @@ describe("BuilderAddProperty", () => {
 });
 
 describe("Type Safety Edge Cases", () => {
-    test("Should prevent duplicate keys (last write wins)", () => {
+    test("should prevent duplicate keys (last write wins)", () => {
         type Step0 = {};
         type Step1 = BuilderAddProperty<"value", number, Step0>;
         type Step2 = BuilderAddProperty<"value", string, Step1>;
@@ -210,13 +210,13 @@ describe("Type Safety Edge Cases", () => {
         expectTypeOf<Step2>().not.toEqualTypeOf<{ value: number }>();
     });
 
-    test("Should handle empty string keys", () => {
+    test("should handle empty string keys", () => {
         type WithEmpty = BuilderAddProperty<"", number>;
 
         expectTypeOf<WithEmpty>().toHaveProperty("");
     });
 
-    test("Should handle keys with special characters", () => {
+    test("should handle keys with special characters", () => {
         type WithDash = BuilderAddProperty<"user-name", string>;
         type WithDot = BuilderAddProperty<"user.name", string>;
         type WithUnderscore = BuilderAddProperty<"user_name", string>;
@@ -287,7 +287,7 @@ describe("Type Safety Edge Cases", () => {
         }>();
     });
 
-    test("Should handle very long property chains", () => {
+    test("should handle very long property chains", () => {
         type Chain0 = {};
         type Chain1 = BuilderAddProperty<"a", 1, Chain0>;
         type Chain2 = BuilderAddProperty<"b", 2, Chain1>;

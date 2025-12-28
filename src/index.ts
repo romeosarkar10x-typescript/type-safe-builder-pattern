@@ -1,35 +1,74 @@
-import type { BuilderAddProperty, PrettifyObject } from "@/types";
+import type { BuilderAddProperty, PrettifyBuilderObject } from "@/types";
 
-const BUILDER_SYMBOL = Symbol("BUILDER");
+type SchemaConstraint = Record<string, unknown>;
 
-class ObjectBuilderHelper<T extends object> {
-    [BUILDER_SYMBOL]: {
-        internal: T;
-    };
+type ObjectBuilderSetFunctionReturnType<
+    T extends SchemaConstraint,
+    Schema extends SchemaConstraint,
+> = T extends Schema
+    ? ObjectBuilderHelperWithBuildMethodType<T, Schema>
+    : ObjectBuilderHelperType<T, Schema>;
 
-    constructor(o: T) {
-        this[BUILDER_SYMBOL] = {
-            internal: o,
-        };
-    }
-
-    set<const Key extends string, const Value>(
-        key: string extends Key ? never : Key,
+interface ObjectBuilderHelperType<
+    T extends SchemaConstraint,
+    Schema extends SchemaConstraint,
+> {
+    set: <
+        const Key extends keyof Schema & string,
+        const Value extends Schema[Key],
+        const U extends object & BuilderAddProperty<Key, Value, T> =
+            BuilderAddProperty<Key, Value, T>,
+    >(
+        key: Key,
         value: Value,
-    ) {
-        type U = BuilderAddProperty<Key, Value, T>;
+    ) => ObjectBuilderSetFunctionReturnType<U, Schema>;
+}
 
-        return new ObjectBuilderHelper<U>({
-            ...this[BUILDER_SYMBOL].internal,
+interface ObjectBuilderHelperWithBuildMethodType<
+    T extends SchemaConstraint,
+    Schema extends SchemaConstraint,
+> extends ObjectBuilderHelperType<T, Schema> {
+    build: () => T;
+}
+
+export function objectBuilder<const Schema extends SchemaConstraint>() {
+    return objectBuilderHelper<{}, Schema>({});
+}
+
+function objectBuilderHelper<
+    T extends SchemaConstraint,
+    const Schema extends SchemaConstraint,
+>(o: T): ObjectBuilderSetFunctionReturnType<T, Schema>;
+
+function objectBuilderHelper<
+    T extends SchemaConstraint,
+    const Schema extends SchemaConstraint,
+>(
+    object: T,
+):
+    | ObjectBuilderHelperType<T, Schema>
+    | ObjectBuilderHelperWithBuildMethodType<T, Schema> {
+    function set<
+        const Key extends keyof Schema & string,
+        const Value extends Schema[Key],
+        const U extends BuilderAddProperty<Key, Value, T> = BuilderAddProperty<
+            Key,
+            Value,
+            T
+        >,
+    >(key: Key, value: Value): ObjectBuilderSetFunctionReturnType<U, Schema> {
+        return objectBuilderHelper({
+            ...object,
             [key]: value,
         } as U);
     }
 
-    build(): PrettifyObject<T> {
-        return this[BUILDER_SYMBOL].internal;
+    function build(): PrettifyBuilderObject<T> {
+        return object;
     }
-}
 
-export function ObjectBuilder() {
-    return new ObjectBuilderHelper({});
+    return {
+        set,
+        build,
+    };
 }
