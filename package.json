@@ -7,7 +7,6 @@
     },
     "module": "src/index.mts",
     "type": "module",
-    "private": true,
     "scripts": {
         "format": "prettier --write \"**/*.{mjs,mts,json}\"",
         "check-formatting": "prettier --check \"**/*.{mjs,mts,json}\""
