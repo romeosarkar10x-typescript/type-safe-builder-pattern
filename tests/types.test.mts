@@ -138,7 +138,7 @@ describe("BuilderAddProperty", () => {
         type NumericKey = typeof num;
 
         // @ts-expect-error: Type 'number' does not satisfy the constraint 'string'.
-        BuilderAddProperty<NumericKey, number>;
+        type Result = BuilderAddProperty<NumericKey, number>;
     });
 
     test("should handle symbol keys (edge case)", () => {
@@ -146,7 +146,7 @@ describe("BuilderAddProperty", () => {
         type SymbolKey = typeof sym;
 
         // @ts-expect-error: Type 'typeof sym' does not satisfy the constraint 'string'.
-        BuilderAddProperty<SymbolKey, number>;
+        type Result = BuilderAddProperty<SymbolKey, number>;
     });
 
     test("should create flattened object types (prettified)", () => {
