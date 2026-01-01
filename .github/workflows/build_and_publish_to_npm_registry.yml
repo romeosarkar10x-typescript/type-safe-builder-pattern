@@ -18,6 +18,8 @@ jobs:
 
             - uses: actions/setup-node@v6
               name: Setup 'node' and 'npm'
+              with:
+                  registry-url: registry.npmjs.org
 
             - run: cat .npmrc
               name: Get contents of the .npmrc file
