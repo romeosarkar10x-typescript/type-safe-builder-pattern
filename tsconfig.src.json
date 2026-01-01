@@ -24,6 +24,10 @@
         "noUnusedParameters": false,
         "noPropertyAccessFromIndexSignature": false,
 
+        // Declaration files
+        "declaration": true,
+        "declarationMap": true,
+
         "outDir": "dist",
         "rootDir": "src"
     },
