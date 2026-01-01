@@ -24,6 +24,8 @@ jobs:
               with:
                   registry-url: "https://registry.npmjs.org"
 
+            - run: echo $NPM_CONFIG_USERCONFIG
+
             - run: ls -la .
               name: List all files
 
