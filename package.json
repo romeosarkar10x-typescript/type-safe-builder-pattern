@@ -1,15 +1,10 @@
 {
     "name": "type-safe-builder-pattern",
+    "version": "0.0.0",
     "author": "Romeo Sarkar",
     "repository": {
         "type": "git",
         "url": "https://github.com/romeosarkar10x-typescript/type-safe-builder-pattern"
-    },
-    "module": "src/index.mts",
-    "type": "module",
-    "scripts": {
-        "format": "prettier --write \"**/*.{mjs,mts,json}\"",
-        "check-formatting": "prettier --check \"**/*.{mjs,mts,json}\""
     },
     "devDependencies": {
         "@types/bun": "latest",
@@ -17,5 +12,28 @@
     },
     "peerDependencies": {
         "typescript": "^5"
+    },
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "keywords": [
+        "typescript",
+        "builder",
+        "builder-pattern",
+        "type-safe-builder-pattern",
+        "type-safe"
+    ],
+    "scripts": {
+        "build": "tsc -p tsconfig.src.json",
+        "format": "prettier --write \"**/*.{mjs,mts,json}\"",
+        "check-formatting": "prettier --check \"**/*.{mjs,mts,json}\""
     }
 }
