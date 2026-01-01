@@ -34,6 +34,7 @@
     "scripts": {
         "build": "tsc -p tsconfig.src.json",
         "format": "prettier --write \"**/*.{mjs,mts,json}\"",
-        "check-formatting": "prettier --check \"**/*.{mjs,mts,json}\""
+        "check-formatting": "prettier --check \"**/*.{mjs,mts,json}\"",
+        "type-check": "tsc -p tsconfig.test.json"
     }
 }
