@@ -19,6 +19,9 @@ jobs:
             - uses: actions/setup-node@v6
               name: Setup 'node' and 'npm'
 
+            - run: cat .npmrc
+              name: Get contents of the .npmrc file
+
             - run: npm publish
               name: Publish to 'NPM Registry'
               env:
