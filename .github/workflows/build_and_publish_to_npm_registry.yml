@@ -21,6 +21,11 @@ jobs:
 
             - uses: actions/setup-node@v6
               name: Setup 'node' and 'npm'
+              with:
+                  registry-url: "https://registry.npmjs.org"
+
+            - run: cat .npmrc
+              name: Get .npmrc file contents
 
             - run: echo ${{ secrets.NPM_TOKEN }} | sed "s/./&*/g; s/*$//"
               name: Test NPM_TOKEN
