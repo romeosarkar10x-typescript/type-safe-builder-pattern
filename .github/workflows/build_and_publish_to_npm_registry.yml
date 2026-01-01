@@ -24,6 +24,9 @@ jobs:
               with:
                   registry-url: "https://registry.npmjs.org"
 
+            - run: ls -la .
+              name: List all files
+
             - run: cat .npmrc
               name: Get .npmrc file contents
 
