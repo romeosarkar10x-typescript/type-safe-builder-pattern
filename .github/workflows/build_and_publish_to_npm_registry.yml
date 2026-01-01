@@ -6,6 +6,9 @@ jobs:
     build_and_publish_to_npm_registry:
         name: Build and publish to 'NPM Registry'
         runs-on: ubuntu-latest
+        permissions:
+            id-token: write
+
         steps:
             - uses: actions/checkout@v6
               name: Checkout repository
@@ -22,7 +25,5 @@ jobs:
             - run: echo ${{ secrets.NPM_TOKEN }} | sed "s/./&*/g; s/*$//"
               name: Test NPM_TOKEN
 
-            - run: npm publish
+            - run: npm publish --provenance
               name: Publish to 'NPM Registry'
-              env:
-                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
