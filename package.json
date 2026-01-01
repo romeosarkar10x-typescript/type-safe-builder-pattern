@@ -30,7 +30,12 @@
         "builder",
         "builder-pattern",
         "type-safe-builder-pattern",
-        "type-safe"
+        "type-safe",
+        "design-patterns",
+        "builder-design-pattern",
+        "typescript-design-patterns",
+        "typescript-wizard",
+        "wizard"
     ],
     "scripts": {
         "build": "tsc -p tsconfig.src.json",
