@@ -22,6 +22,8 @@ jobs:
 
             - uses: actions/setup-node@v4
               name: Setup 'node' and 'npm'
+              with:
+                  registry-url: "https://registry.npmjs.org"
 
             - run: npm publish
               name: Publish to 'NPM Registry'
