@@ -1,5 +1,6 @@
 {
     "name": "type-safe-builder-pattern",
+    "description": "Implementation of the 'Builder' design pattern in typescript",
     "version": "0.0.1",
     "author": "Romeo Sarkar",
     "repository": {
