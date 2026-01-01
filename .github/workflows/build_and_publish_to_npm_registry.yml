@@ -18,8 +18,8 @@ jobs:
 
             - uses: actions/setup-node@v6
               name: Setup 'node' and 'npm'
-              env:
-                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
             - run: npm publish
               name: Publish to 'NPM Registry'
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
