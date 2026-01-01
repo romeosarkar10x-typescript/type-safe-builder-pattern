@@ -3,32 +3,32 @@ import type { BuilderAddProperty, PrettifyBuilderObject } from "./types";
 type SchemaConstraint = Record<string, unknown>;
 
 type ObjectBuilderSetFunctionReturnType<
-    T extends SchemaConstraint,
+    Current extends SchemaConstraint,
     Schema extends SchemaConstraint,
-> = T extends Schema
-    ? ObjectBuilderHelperWithBuildMethodType<T, Schema>
-    : ObjectBuilderHelperType<T, Schema>;
+> = Current extends Schema
+    ? ObjectBuilderHelperWithBuildMethodType<Current, Schema>
+    : ObjectBuilderHelperType<Current, Schema>;
 
 interface ObjectBuilderHelperType<
-    T extends SchemaConstraint,
+    Current extends SchemaConstraint,
     Schema extends SchemaConstraint,
 > {
     set: <
         const Key extends keyof Schema & string,
         const Value extends Schema[Key],
-        const U extends object & BuilderAddProperty<Key, Value, T> =
-            BuilderAddProperty<Key, Value, T>,
+        const Next extends object & BuilderAddProperty<Key, Value, Current> =
+            BuilderAddProperty<Key, Value, Current>,
     >(
         key: Key,
         value: Value,
-    ) => ObjectBuilderSetFunctionReturnType<U, Schema>;
+    ) => ObjectBuilderSetFunctionReturnType<Next, Schema>;
 }
 
 interface ObjectBuilderHelperWithBuildMethodType<
-    T extends SchemaConstraint,
+    Current extends SchemaConstraint,
     Schema extends SchemaConstraint,
-> extends ObjectBuilderHelperType<T, Schema> {
-    build: () => T;
+> extends ObjectBuilderHelperType<Current, Schema> {
+    build: () => Current;
 }
 
 export function objectBuilder<const Schema extends SchemaConstraint>() {
@@ -36,34 +36,34 @@ export function objectBuilder<const Schema extends SchemaConstraint>() {
 }
 
 function objectBuilderHelper<
-    T extends SchemaConstraint,
+    Current extends SchemaConstraint,
     const Schema extends SchemaConstraint,
->(o: T): ObjectBuilderSetFunctionReturnType<T, Schema>;
+>(o: Current): ObjectBuilderSetFunctionReturnType<Current, Schema>;
 
 function objectBuilderHelper<
-    T extends SchemaConstraint,
+    Current extends SchemaConstraint,
     const Schema extends SchemaConstraint,
 >(
-    object: T,
+    object: Current,
 ):
-    | ObjectBuilderHelperType<T, Schema>
-    | ObjectBuilderHelperWithBuildMethodType<T, Schema> {
+    | ObjectBuilderHelperType<Current, Schema>
+    | ObjectBuilderHelperWithBuildMethodType<Current, Schema> {
     function set<
         const Key extends keyof Schema & string,
         const Value extends Schema[Key],
-        const U extends BuilderAddProperty<Key, Value, T> = BuilderAddProperty<
-            Key,
-            Value,
-            T
-        >,
-    >(key: Key, value: Value): ObjectBuilderSetFunctionReturnType<U, Schema> {
+        const Next extends BuilderAddProperty<Key, Value, Current> =
+            BuilderAddProperty<Key, Value, Current>,
+    >(
+        key: Key,
+        value: Value,
+    ): ObjectBuilderSetFunctionReturnType<Next, Schema> {
         return objectBuilderHelper({
             ...object,
             [key]: value,
-        } as U);
+        } as Next);
     }
 
-    function build(): PrettifyBuilderObject<T> {
+    function build(): PrettifyBuilderObject<Current> {
         return object;
     }
 
