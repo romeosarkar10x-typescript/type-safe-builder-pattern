@@ -1,21 +1,3 @@
-// declare const BUILDER: unique symbol;
-
-// export type BuilderZygoteType = {};
-
-/*
-export type BuilderAddProperty<
-    Key extends string,
-    Value,
-    BuilderObject extends BuilderZygoteType = BuilderZygoteType,
-> = string extends Key
-    ? never
-    : PrettifyObject<
-          {
-              [K in keyof BuilderObject]: BuilderObject[K];
-          } & Record<Key, Value>
-      >;
-      */
-
 type BuilderDoAddUniqueProperty<
     KeyLiteral extends string,
     Value,
