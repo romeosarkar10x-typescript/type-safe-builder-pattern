@@ -37,5 +37,9 @@
         "format": "prettier --write \"**/*.{mjs,mts,json}\"",
         "check-formatting": "prettier --check \"**/*.{mjs,mts,json}\"",
         "type-check": "tsc -p tsconfig.test.json"
-    }
+    },
+    "engines": {
+        "node": ">=25"
+    },
+    "engineStrict": true
 }
