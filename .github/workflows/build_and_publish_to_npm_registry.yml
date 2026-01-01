@@ -23,3 +23,5 @@ jobs:
 
             - run: npm publish --provenance
               name: Publish to 'NPM Registry'
+              env:
+                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
