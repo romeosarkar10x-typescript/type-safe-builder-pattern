@@ -4,7 +4,7 @@
     "author": "Romeo Sarkar",
     "repository": {
         "type": "git",
-        "url": "https://github.com/romeosarkar10x-typescript/type-safe-builder-pattern"
+        "url": "git+https://github.com/romeosarkar10x-typescript/type-safe-builder-pattern.git"
     },
     "devDependencies": {
         "@types/bun": "latest",
