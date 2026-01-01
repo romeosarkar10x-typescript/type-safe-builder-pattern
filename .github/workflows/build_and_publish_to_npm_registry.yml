@@ -24,6 +24,8 @@ jobs:
               with:
                   registry-url: "https://registry.npmjs.org"
 
+            - run: pwd
+
             - run: echo $NPM_CONFIG_USERCONFIG
 
             - run: ls -la .
