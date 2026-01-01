@@ -8,6 +8,8 @@ jobs:
         runs-on: ubuntu-latest
         permissions:
             id-token: write
+            contents: read
+
         steps:
             - uses: actions/checkout@v6
               name: Checkout repository
@@ -21,7 +23,5 @@ jobs:
             - uses: actions/setup-node@v4
               name: Setup 'node' and 'npm'
 
-            - run: npm publish --provenance
+            - run: npm publish
               name: Publish to 'NPM Registry'
-              env:
-                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
