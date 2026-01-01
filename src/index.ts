@@ -1,4 +1,4 @@
-import type { BuilderAddProperty, PrettifyBuilderObject } from "@/types";
+import type { BuilderAddProperty, PrettifyBuilderObject } from "./types";
 
 type SchemaConstraint = Record<string, unknown>;
 
