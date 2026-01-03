@@ -14,7 +14,7 @@ interface ObjectBuilderHelperType<
     Schema extends SchemaConstraint,
 > {
     set: <
-        const Key extends keyof Schema & string,
+        const Key extends Exclude<keyof Schema, keyof Current> & string,
         const Value extends Schema[Key],
         const Next extends object & BuilderAddProperty<Key, Value, Current> =
             BuilderAddProperty<Key, Value, Current>,
@@ -36,12 +36,12 @@ export function objectBuilder<const Schema extends SchemaConstraint>() {
 }
 
 function objectBuilderHelper<
-    Current extends SchemaConstraint,
+    const Current extends SchemaConstraint,
     const Schema extends SchemaConstraint,
 >(o: Current): ObjectBuilderSetFunctionReturnType<Current, Schema>;
 
 function objectBuilderHelper<
-    Current extends SchemaConstraint,
+    const Current extends SchemaConstraint,
     const Schema extends SchemaConstraint,
 >(
     object: Current,
@@ -49,7 +49,7 @@ function objectBuilderHelper<
     | ObjectBuilderHelperType<Current, Schema>
     | ObjectBuilderHelperWithBuildMethodType<Current, Schema> {
     function set<
-        const Key extends keyof Schema & string,
+        const Key extends Exclude<keyof Schema, keyof Current> & string,
         const Value extends Schema[Key],
         const Next extends BuilderAddProperty<Key, Value, Current> =
             BuilderAddProperty<Key, Value, Current>,
@@ -58,8 +58,8 @@ function objectBuilderHelper<
         value: Value,
     ): ObjectBuilderSetFunctionReturnType<Next, Schema> {
         return objectBuilderHelper({
-            ...object,
             [key]: value,
+            ...object,
         } as Next);
     }
 

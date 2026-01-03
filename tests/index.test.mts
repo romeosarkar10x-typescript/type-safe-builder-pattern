@@ -415,39 +415,217 @@ describe("objectBuilder - Chaining Behavior", () => {
 });
 
 // ============================================================================
-// Property Override Tests
+// Property Immutability Tests
 // ============================================================================
 
-describe("objectBuilder - Property Override", () => {
-    test("should allow overriding a property value", () => {
+describe("objectBuilder - Property Immutability", () => {
+    test("should prevent setting the same property twice on the same chain", () => {
         const result = objectBuilder<SimpleSchema>()
             .set("id", 1)
             .set("name", "Original")
-            .set("name", "Updated")
-            .build();
-
-        expect(result.name).toBe("Updated");
+            // @ts-expect-error - Cannot set 'name' twice on the same chain
+            .set("name", "Updated");
     });
 
-    test("should allow multiple overrides of the same property", () => {
+    test("should prevent multiple overrides of the same property", () => {
         const result = objectBuilder<SimpleSchema>()
             .set("id", 1)
+            // @ts-expect-error - Cannot set 'id' multiple times on the same chain
             .set("id", 2)
-            .set("id", 3)
-            .set("name", "Test")
-            .build();
-
-        expect(result.id).toBe(3);
+            // @ts-expect-error - Cannot set 'id' multiple times on the same chain
+            .set("id", 3);
     });
 
-    test("should override with different value types in union", () => {
+    test("should prevent override with different value types in union", () => {
         const result = objectBuilder<SchemaWithNull>()
             .set("id", 1)
             .set("deletedAt", new Date())
-            .set("deletedAt", null)
+            // @ts-expect-error - Cannot set 'deletedAt' twice on the same chain
+            .set("deletedAt", null);
+    });
+
+    test("should allow setting a property on different branches", () => {
+        const baseBuilder = objectBuilder<SimpleSchema>().set("id", 1);
+
+        const builder1 = baseBuilder.set("name", "Branch1");
+        const builder2 = baseBuilder.set("name", "Branch2");
+
+        expect(builder1.build().name).toBe("Branch1");
+        expect(builder2.build().name).toBe("Branch2");
+    });
+});
+
+// ============================================================================
+// Property Immutability Tests
+// ============================================================================
+
+describe("objectBuilder - Property Immutability", () => {
+    test("should prevent setting the same property twice on the same chain", () => {
+        const result = objectBuilder<SimpleSchema>()
+            .set("id", 1)
+            .set("name", "Original")
+            // @ts-expect-error - Cannot set 'name' twice on the same chain
+            .set("name", "Updated");
+    });
+
+    test("should prevent multiple overrides of the same property", () => {
+        const result = objectBuilder<SimpleSchema>()
+            .set("id", 1)
+            // @ts-expect-error - Cannot set 'id' multiple times on the same chain
+            .set("id", 2)
+            // @ts-expect-error - Cannot set 'id' multiple times on the same chain
+            .set("id", 3);
+    });
+
+    test("should prevent override with different value types in union", () => {
+        const result = objectBuilder<SchemaWithNull>()
+            .set("id", 1)
+            .set("deletedAt", new Date())
+            // @ts-expect-error - Cannot set 'deletedAt' twice on the same chain
+            .set("deletedAt", null);
+    });
+
+    test("should allow setting a property on different branches", () => {
+        const baseBuilder = objectBuilder<SimpleSchema>().set("id", 1);
+
+        const builder1 = baseBuilder.set("name", "Branch1");
+        const builder2 = baseBuilder.set("name", "Branch2");
+
+        expect(builder1.build().name).toBe("Branch1");
+        expect(builder2.build().name).toBe("Branch2");
+    });
+});
+
+// ============================================================================
+// Property Immutability - Runtime Validation Tests
+// ============================================================================
+
+describe("objectBuilder - Property Immutability Runtime", () => {
+    test("setting the same property twice should use the first value", () => {
+        const result = objectBuilder<SimpleSchema>()
+            .set("id", 1)
+            .set("name", "Original")
+            // @ts-ignore
+            .set("name", "Updated")
+            // @ts-ignore
             .build();
 
-        expect(result.deletedAt).toBeNull();
+        expect(result.name).toBe("Original");
+    });
+
+    test("multiple overrides should use the first value", () => {
+        const result = objectBuilder<SimpleSchema>()
+            .set("id", 1)
+            // @ts-ignore
+            .set("id", 2)
+            // @ts-ignore
+            .set("id", 3)
+            // @ts-ignore
+            .set("name", "Test")
+            .build();
+
+        expect(result.id).toBe(1);
+        expect(result.name).toBe("Test");
+    });
+
+    test("override with different union types should use first value", () => {
+        const date = new Date();
+        const result = objectBuilder<SchemaWithNull>()
+            .set("deletedAt", date)
+            .set("id", 1)
+            // @ts-ignore
+            .set("deletedAt", null)
+            // @ts-ignore
+            .build();
+
+        expect(result.deletedAt).toBe(date);
+    });
+
+    test("branching preserves immutability at runtime", () => {
+        const baseBuilder = objectBuilder<SimpleSchema>().set("id", 1);
+
+        const result1 = baseBuilder.set("name", "Branch1").build();
+        const result2 = baseBuilder.set("name", "Branch2").build();
+
+        // Each branch should have its own value
+        expect(result1.name).toBe("Branch1");
+        expect(result2.name).toBe("Branch2");
+
+        // Building again should give same results
+        expect(baseBuilder.set("name", "Branch1").build().name).toBe("Branch1");
+    });
+
+    test("overriding optional property should use first value", () => {
+        const result = objectBuilder<SchemaWithOptional>()
+            .set("id", 1)
+            .set("name", "Test")
+            .set("nickname", "First")
+            // @ts-ignore
+            .set("nickname", "Second")
+            // @ts-ignore
+            .build();
+
+        expect(result.nickname).toBe("First");
+    });
+
+    test("complex values override preserves reference of first set", () => {
+        const date1 = new Date("2024-01-01");
+        const date2 = new Date("2024-12-31");
+
+        const result = objectBuilder<ComplexSchema>()
+            .set("id", 1)
+            .set("firstName", "Test")
+            .set("dateOfBirth", date1)
+            // @ts-ignore
+            .set("dateOfBirth", date2)
+            // @ts-ignore
+            .set("email", "test@test.com")
+            // @ts-ignore
+            .set("age", 25)
+            .build();
+
+        expect(result.dateOfBirth).toBe(date1);
+        expect(result.dateOfBirth).not.toBe(date2);
+    });
+
+    test("array override uses first set value", () => {
+        const tags1 = ["a", "b"];
+        const tags2 = ["x", "y", "z"];
+
+        const result = objectBuilder<SchemaWithArray>()
+            .set("id", 1)
+            .set("tags", tags1)
+            .set("tags" as any, tags2)
+            // @ts-ignore
+            .set("scores", [1, 2, 3])
+            .build();
+
+        expect(result.tags).toBe(tags1);
+        expect(result.tags).not.toBe(tags2);
+        expect(result.tags).toEqual(["a", "b"]);
+    });
+
+    test("nested object override uses first set value", () => {
+        const metadata1 = {
+            createdAt: new Date("2024-01-01"),
+            updatedAt: new Date("2024-06-01"),
+        };
+
+        const metadata2 = {
+            createdAt: new Date("2024-12-01"),
+            updatedAt: new Date("2024-12-31"),
+        };
+
+        const result = objectBuilder<SchemaWithNestedObject>()
+            .set("id", 1)
+            .set("metadata", metadata1)
+            // @ts-ignore
+            .set("metadata", metadata2)
+            // @ts-ignore
+            .build();
+
+        expect(result.metadata).toBe(metadata1);
+        expect(result.metadata).not.toBe(metadata2);
     });
 });
 
